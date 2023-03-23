@@ -26,8 +26,26 @@ function App() {
   }
 
   function guardarNumero(num){
+    if(localStorage.getItem(num) != null){
+      Swal.fire({
+        title: 'El numero ' + num + ' ya esta asignado a "' + localStorage.getItem(num) + '", ¿Desea cambiarlo?',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setNamePerson(num);
+        }
+      })
+    }else{
+      setNamePerson(num);
+    }
+    
+  }
+
+  function setNamePerson(num){
     Swal.fire({
-      title: 'Ingrese nombre',
+      title: 'Nro: ' + num +' - Ingrese nombre:',
       input: 'text',
       showCancelButton: true,
       confirmButtonText: 'Aceptar',
@@ -121,7 +139,7 @@ function App() {
 
       <div className="grilla">
         {numbers.map((number) => (
-        <div key={number} class="grid__col--1-12 styleNumber" onClick={() => guardarNumero(number)} data-numero={number}>
+        <div key={number} class="styleNumber" onClick={() => guardarNumero(number)} data-numero={number}>
 
           <div class="inner-wrap redondeado">
               {number}
