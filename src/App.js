@@ -1,12 +1,28 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
 function App() {
+  const [longToRifa, setLongToRifa] = useState(100);
+
+  useEffect(() => {
+    loadStyleDelete();
+  });
 
   const numbers = [];
-  for(var i = 1; i <= 100; i++){
+  for(var i = 1; i <= longToRifa; i++){
     numbers[i-1] = i;
+  }
+
+  function loadStyleDelete(){
+    const keysToLocalStorage = getAllKeysLocalStorage();
+    keysToLocalStorage.forEach(keyDiv => {
+      if(keyDiv != null){
+        console.log("num: " + keyDiv);
+        const divSaved = document.querySelector(`div[data-numero="${keyDiv}"]`);
+        divSaved.classList.add('tachado');
+      }
+    });
   }
 
   function guardarNumero(num){
@@ -25,9 +41,7 @@ function App() {
       if (result.isConfirmed) {
         const nombre = result.value;
         localStorage.setItem(num, nombre);
-        // Buscamos el div que se le hizo click
         const divClickeado = document.querySelector(`div[data-numero="${num}"]`);
-        // Le agregamos una clase al div clickeado
         divClickeado.classList.add('tachado');
       }
     });
@@ -68,29 +82,48 @@ function App() {
   }
 
   function sortear(){
-    let numAleatorio = getRandomInt(numbers.length);
-    numAleatorio = 100;
-    if(getAllKeysLocalStorage().includes(numAleatorio.toString())){
-      console.log("el ganador es: " + localStorage.getItem(numAleatorio));
-      Swal.fire({
-        title: 'EL GANADOR ES',
-        text: localStorage.getItem(numAleatorio),
-      });
-      localStorage.removeItem(numAleatorio.toString());
-    }else{
-      console.log("no existe");
-    }
+    let allkeys = getAllKeysLocalStorage();
+    let numAleatorio = getRandomInt(allkeys.length);
+    Swal.fire({
+      title: 'El ganador es',
+      html: "Nro: " + allkeys[numAleatorio] + " <br>Nombre: " + localStorage.getItem(allkeys[numAleatorio]),
+    });
+  }
+
+  function cambiarLongToRifa(){
+    
+    Swal.fire({
+      title: 'Ingrese la cantidad de numeros para la rifa:',
+      input: 'number',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: (num) => {
+        if (!num || isNaN(num) || num <= 0) {
+          Swal.showValidationMessage('Ingrese un número válido')
+        }
+        setLongToRifa(num);
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    })
+
   }
 
   return (
     <div className="App">
       <h1>RIFAS</h1>
 
-      <div className="grid">
-        {numbers.map((number) => (
-        <div key={number} class="grid__col--1-12 separacion" onClick={() => guardarNumero(number)} data-numero={number}>
+      <button onClick={cambiarLongToRifa} className="btns-actions">Cantidad de numeros</button>
 
-          <div class="inner-wrap">
+      <div className="grilla">
+        {numbers.map((number) => (
+        <div key={number} class="grid__col--1-12 styleNumber" onClick={() => guardarNumero(number)} data-numero={number}>
+
+          <div class="inner-wrap redondeado">
               {number}
           </div>
 

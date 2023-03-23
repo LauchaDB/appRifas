@@ -18,6 +18,14 @@
   }
 }
 
+@media (max-width: 300px) {
+  
+}
+.grilla{
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -447,8 +455,11 @@ button {
   font-size: 1.2rem;
   cursor: pointer;
 }
- .separacion{
+ .styleNumber{
   margin-bottom: 1em;
+ }
+ .redondeado{
+  border-radius: 20%;
  }
  .btns-actions{
   margin: 1em;
