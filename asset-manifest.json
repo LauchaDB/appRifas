@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/appRifas/static/css/main.22b87444.css",
-    "main.js": "/appRifas/static/js/main.9afcf996.js",
+    "main.js": "/appRifas/static/js/main.22547e60.js",
     "static/js/787.28cb0dcd.chunk.js": "/appRifas/static/js/787.28cb0dcd.chunk.js",
     "index.html": "/appRifas/index.html",
     "main.22b87444.css.map": "/appRifas/static/css/main.22b87444.css.map",
-    "main.9afcf996.js.map": "/appRifas/static/js/main.9afcf996.js.map",
+    "main.22547e60.js.map": "/appRifas/static/js/main.22547e60.js.map",
     "787.28cb0dcd.chunk.js.map": "/appRifas/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.22b87444.css",
-    "static/js/main.9afcf996.js"
+    "static/js/main.22547e60.js"
   ]
 }
