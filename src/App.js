@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 function App() {
   const [longToRifa, setLongToRifa] = useState(100);
 
+  let numerosGanadores = [];
+
   useEffect(() => {
     loadStyleDelete();
   });
@@ -18,7 +20,6 @@ function App() {
     const keysToLocalStorage = getAllKeysLocalStorage();
     keysToLocalStorage.forEach(keyDiv => {
       if(keyDiv != null){
-        console.log("num: " + keyDiv);
         const divSaved = document.querySelector(`div[data-numero="${keyDiv}"]`);
         divSaved.classList.add('tachado');
       }
@@ -27,20 +28,29 @@ function App() {
 
   function guardarNumero(num){
     if(localStorage.getItem(num) != null){
+      
       Swal.fire({
-        title: 'El numero ' + num + ' ya esta asignado a "' + localStorage.getItem(num) + '", ¿Desea cambiarlo?',
+        title: 'El numero ' + num + ' ya esta asignado a "' + localStorage.getItem(num) + '", ¿Desea cambiarlo o eliminarlo?',
         showCancelButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'No'
+        confirmButtonText: 'Cambiar',
+        cancelButtonText: 'Eliminar'
       }).then((result) => {
         if (result.isConfirmed) {
           setNamePerson(num);
+        }else if (result.dismiss === Swal.DismissReason.cancel){
+          deleteNumber(num);
         }
       })
     }else{
       setNamePerson(num);
     }
     
+  }
+
+  function deleteNumber(num){
+    localStorage.removeItem(num);
+    const divClickeado = document.querySelector(`div[data-numero="${num}"]`);
+    divClickeado.classList.remove('tachado');
   }
 
   function setNamePerson(num){
@@ -80,6 +90,18 @@ function App() {
     })
   }
 
+  function mostrarGanadores(){
+
+    const contenido = numerosGanadores.map((elemento, indice) => {
+      return `<li key=${indice}>PREMIO ${indice + 1}: nro: ${elemento} -> ${localStorage.getItem(elemento)} </li>`;
+    });
+  
+    Swal.fire({
+      title: 'Ganadores: ',
+      html: `<ul>${contenido.join('')}</ul>`,
+    });
+  }
+
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
@@ -87,7 +109,9 @@ function App() {
   function getAllKeysLocalStorage() {
     let keys = [];
     for (var i = 0; i < localStorage.length; i++) {
-      keys.push(localStorage.key(i));
+      if(!numerosGanadores.includes(localStorage.key(i))){
+        keys.push(localStorage.key(i));
+      }
     }
     return keys;
   }
@@ -102,10 +126,18 @@ function App() {
   function sortear(){
     let allkeys = getAllKeysLocalStorage();
     let numAleatorio = getRandomInt(allkeys.length);
-    Swal.fire({
-      title: 'El ganador es',
-      html: "Nro: " + allkeys[numAleatorio] + " <br>Nombre: " + localStorage.getItem(allkeys[numAleatorio]),
-    });
+    if(allkeys.length == 0){
+      Swal.fire({
+        title: 'No hay mas participantes'
+      });
+    }else{
+      Swal.fire({
+        title: 'El ganador es',
+        html: "Nro: " + allkeys[numAleatorio] + " <br>Nombre: " + localStorage.getItem(allkeys[numAleatorio]),
+      });
+      numerosGanadores.push(allkeys[numAleatorio]);
+    }
+    
   }
 
   function cambiarLongToRifa(){
@@ -153,6 +185,8 @@ function App() {
       <button onClick={sortear} className="btns-actions">SORTEAR</button>
 
       <button onClick={limpiarTodoLocalStorage} className="btns-actions">Borrar todos los registros</button>
+
+      <button onClick={mostrarGanadores} className="btns-actions">Ver ganadores</button>
 
     </div>
   );
